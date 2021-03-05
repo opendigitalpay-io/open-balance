@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+#    hostname: 'mysql'
+    environment:
+      - MYSQL_DATABASE=open_balance
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - '127.0.0.1:3306:3306'
+    volumes:
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+#  open-balance:
+#    image: open-balance-v1:0.0.1
+#    depends_on:
+#      - mysql
+#    build:
+#      context: .
+#    ports:
+#      - '127.0.0.1:8080:8080'
