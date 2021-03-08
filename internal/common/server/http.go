@@ -14,5 +14,5 @@ func RunHTTPServer(createHandler func(engine *gin.Engine) http.Handler) {
 
 	createHandler(router)
 
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8180", router)
 }
