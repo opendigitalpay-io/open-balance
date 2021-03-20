@@ -1,5 +1,57 @@
 # open-balance
 
+<p align="center"> Open-Balance is a free and open-source implementation of balance system that serves the foundation for a payment system or a reward system. 
+</p>
+<p align="center">
+</p>
+
+<div align="center">
+  <h3>
+    <a href="https://www.opendigitalpay.io">
+      Website
+    </a>
+    <span> | </span>
+    <a href="https://docs.opendigitalpay.io">
+      Documentation
+    </a>
+    <span> | </span>
+    <a href="https://docs.opendigitalpay.io/API/balance/v1/">
+      API
+    </a>
+    <span> | </span>
+    <a href="https://docs.opendigitalpay.io/Contribute/">
+      Contribute
+    </a>
+    <span> | </span>
+  </h3>
+</div>
+<br/>
+
+<p align="center">
+  <a href="https://demo.opendigitalpay.io">View Demo</a>
+  ·
+  <a href="https://github.com/opendigitalpay-io/open-balance/issues">Report a bug</a>
+  ·
+  <a href="https://github.com/opendigitalpay-io/open-balance/discussions/new">Request a feature</a>
+  ·
+  <a href="https://docs.opendigitalpay.io/FAQ/">FAQ</a>
+</p>
+
+## 💼 Table of Contents
+
+* [Use Cases](#-usecases)
+* [Getting Started](#-getting-started)
+* [Documentation](#-documentation)
+* [Contributing](#-contributing)
+* [Developing](#-developing)
+    * [API](#-api)
+* [Community](#-community)
+* [License](#-license)
+
+## 🎨 usecases
+* use as a balance system
+* use as a reward system
+
 # Local Environment Setup
 ```shell
 # (Optional) 0. make sure you have go installed
