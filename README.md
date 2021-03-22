@@ -1,6 +1,6 @@
 # open-balance
 
-<p align="center"> Open-Balance is a free and open-source implementation of balance system that serves the foundation for a payment system or a reward system. 
+<p align="center"> Open-Balance is a free and open-source implementation of balance system. It makes launching your own digital balance or reward system easily.
 </p>
 <p align="center">
 </p>
@@ -49,8 +49,19 @@
 * [License](#-license)
 
 ## 🎨 usecases
+open balance can be used in the following scenarios
+
 * use as a balance system
+  when using open-balance as a balance system, the core functions are:
+  * Topup balance to customer's balance account using a funding source.
+  * Pay using the balance account
+  * Withdraw to a funding source
 * use as a reward system
+  when using open-balance as a reward system, the core functions are:
+  * Define reward structure, which determine the eligibility of customers in a promotion campaign
+  * Share discount codes with customers
+  * Validate and redeeming the discount/reward.
+
 
 # Local Environment Setup
 ```shell
