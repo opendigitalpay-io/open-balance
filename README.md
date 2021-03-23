@@ -41,14 +41,10 @@
 
 * [Use Cases](#-usecases)
 * [Getting Started](#-getting-started)
-* [Documentation](#-documentation)
-* [Contributing](#-contributing)
 * [Developing](#-developing)
     * [API](#-api)
-* [Community](#-community)
-* [License](#-license)
 
-## 🎨 usecases
+## 🎨 use cases
 open balance can be used in the following scenarios
 
 * use as a balance system
@@ -60,7 +56,7 @@ open balance can be used in the following scenarios
   when using open-balance as a reward system, the core functions are:
   * Define reward structure, which determine the eligibility of customers in a promotion campaign
   * Share discount codes with customers
-  * Validate and redeeming the discount/reward.
+  * Validate and redeem the discount/reward.
 
 
 # Local Environment Setup
@@ -94,5 +90,5 @@ go run main.go
 
 # 5. test local port
 curl -X GET 127.0.0.1:8080/v1/user/1
-curl -X POST 127.0.0.1:8080/v1/user -H "Content-Type: application/json" --data-raw '{"email": "xxx@gmail.com", "phone": "4166666666", "userName": "carlos"}'
+curl -X POST 127.0.0.1:8080/v1/user -H "Content-Type: application/json" --data-raw '{"email": "xxx@gmail.com", "phone": "4166666666", "userName": "testuser"}'
 ```
