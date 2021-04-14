@@ -6,6 +6,36 @@ import (
 	"net/http"
 )
 
+func (h *HTTPServer) TryExternalPay() func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		var tryPayRequest api.TryPayRequest
+		var idemHeader api.IdemHeader
+
+		if err := ctx.ShouldBindJSON(&tryPayRequest); err != nil {
+			h.RespondWithError(ctx, err)
+			return
+		}
+
+		if err := ctx.ShouldBindHeader(&idemHeader); err != nil {
+			h.RespondWithError(ctx, err)
+			return
+		}
+
+		parentId, err := h.payService.TryExternalPay(ctx, idemHeader.IdemKey, tryPayRequest)
+
+		if err != nil {
+			h.RespondWithError(ctx, err)
+			return
+		}
+
+		tryPayResp := api.TryPayResponse{
+			ID: parentId,
+		}
+
+		h.RespondWithOK(ctx, tryPayResp)
+	}
+}
+
 func (h *HTTPServer) TryPay() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		var tryPayRequest api.TryPayRequest

@@ -25,6 +25,8 @@ type ServerInterface interface {
 
 	// POST /v1/pay/try
 	TryPay() func(*gin.Context)
+	// POST /v1/pay/tryExternal
+	TryExternalPay() func(ctx *gin.Context)
 	// POST /v1/pay/commit
 	CommitPay() func(*gin.Context)
 	// POST /v1/pay/cancel
@@ -69,6 +71,7 @@ func HandlerFromMux(si ServerInterface, e *gin.Engine) http.Handler {
 		p := v1.Group("/pay")
 		{
 			p.POST("/try", si.TryPay())
+			p.POST("/tryExternal", si.TryExternalPay())
 			p.POST("/commit", si.CommitPay())
 			p.POST("/cancel", si.CancelPay())
 		}
