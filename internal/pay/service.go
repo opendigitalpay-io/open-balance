@@ -11,6 +11,7 @@ import (
 )
 
 type Service interface {
+	TryExternalPay(context.Context, string, api.TryPayRequest) (uint64, error)
 	TryPay(context.Context, string, api.TryPayRequest) (uint64, error)
 	CommitPay(context.Context, api.CommitPayRequest) error
 	CancelPay(context.Context, api.CancelPayRequest) error
@@ -39,6 +40,20 @@ func NewService(repo Repository, uidGenerator uid.Generator, transactionService 
 		transactionService: transactionService,
 		idemService:        idemService,
 	}
+}
+
+func (s *service) TryExternalPay(ctx context.Context, idemKey string, req api.TryPayRequest) (uint64, error) {
+	parentID, err := s.repo.TxnExec(ctx, func(ctxWithTxn context.Context) (interface{}, error) {
+		return s.idemService.IdemExec(ctxWithTxn, idemKey, func() (interface{}, error) {
+			return s.tryExternalPay(ctxWithTxn, req)
+		})
+	})
+
+	if err != nil {
+		return 0, err
+	}
+
+	return parentID.(uint64), nil
 }
 
 func (s *service) TryPay(ctx context.Context, idemKey string, req api.TryPayRequest) (uint64, error) {
@@ -77,6 +92,68 @@ func (s *service) CancelPay(ctx context.Context, req api.CancelPayRequest) error
 	}
 
 	return nil
+}
+
+func (s *service) tryExternalPay(ctx context.Context, req api.TryPayRequest) (uint64, error) {
+	parentID, err := s.uidGenerator.NextID()
+
+	if err != nil {
+		return 0, err
+	}
+
+	// Here, we are using userId 1 as system user.
+	systemRootAccount, err := s.repo.GetRootAccountByUserID(ctx, 1)
+	if err != nil {
+		return 0, err
+	}
+	systemSourceAccount, err := s.repo.GetBalanceAccountByRootAccountIDAndType(ctx, systemRootAccount.ID, domain.SOURCE)
+	if err != nil {
+		return 0, nil
+	}
+
+	customerRootAccount, err := s.repo.GetRootAccountByUserID(ctx, req.UserID)
+	if err != nil {
+		return 0, err
+	}
+	customerPaymentAccount, err := s.repo.GetBalanceAccountByRootAccountIDAndType(ctx, customerRootAccount.ID, domain.PAYMENT)
+	if err != nil {
+		return 0, err
+	}
+
+	merchantRootAccount, err := s.repo.GetRootAccountByUserID(ctx, req.BusinessID)
+	if err != nil {
+		return 0, err
+	}
+	merchantPayableAccount, err := s.repo.GetBalanceAccountByRootAccountIDAndType(ctx, merchantRootAccount.ID, domain.PAYABLE)
+	if err != nil {
+		return 0, err
+	}
+
+	transactionItem := domain.TransactionItem{
+		SrcAccount: systemSourceAccount,
+		SrcUserID:  systemRootAccount.UserID,
+		DstAccount: customerPaymentAccount,
+		DstUserID:  customerRootAccount.UserID,
+		Amount:     req.Amount,
+	}
+
+	metadata := domain.TransactionMetadata{
+		Action: domain.TRY,
+		NextTransaction: domain.NextTransaction{
+			SrcAccountID: customerPaymentAccount.ID,
+			SrcUserID:    customerRootAccount.UserID,
+			DstAccountID: merchantPayableAccount.ID,
+			DstUserID:    merchantRootAccount.UserID,
+			Amount:       req.Amount,
+		},
+	}
+
+	err = s.transactionService.Transfer(ctx, parentID, transactionItem, metadata)
+	if err != nil {
+		return 0, err
+	}
+
+	return parentID, nil
 }
 
 func (s *service) tryPay(ctx context.Context, req api.TryPayRequest) (uint64, error) {
